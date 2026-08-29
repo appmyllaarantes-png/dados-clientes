@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF7F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1815" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Fichário">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Fichário de Clientes</title>
+<!--
+  Arquivo 100% autocontido: nenhuma fonte, script ou imagem é carregada pela
+  internet. Todo o CSS e JavaScript estão embutidos abaixo, e as fontes usadas
+  são as fontes nativas já instaladas no aparelho (nenhuma vem de rede).
+  Pode ser aberto direto (duplo clique) sem servidor e sem conexão.
+-->
+<style>
+  :root{
+    --ground:#FAF7F4;
+    --surface:#FFFFFF;
+    --surface-2:#F1EBE4;
+    --ink:#262320;
+    --ink-soft:#756E67;
+    --line:#E6DFD8;
+    --accent:#3E6259;
+    --accent-strong:#2F4D45;
+    --accent-contrast:#FFFFFF;
+    --accent-soft-bg:#E7EFEC;
+    --accent-soft-fg:#2F4D45;
+    --tag-estetica-fg:#8B4B5D;
+    --tag-estetica-bg:#F5E6EA;
+    --tag-psi-fg:#3F6459;
+    --tag-psi-bg:#E5EEEA;
+    --danger:#B3423A;
+    --danger-bg:#F7E6E4;
+    --danger-contrast:#FFFFFF;
+    --nav-blur-bg:rgba(250,247,244,.82);
+    --sheet-backdrop:rgba(20,18,15,.42);
+    --shadow-1:0 1px 2px rgba(38,35,32,.07),0 6px 20px rgba(38,35,32,.07);
+    --radius-s:10px;
+    --radius-m:14px;
+    --radius-l:20px;
+    --font-display:ui-serif,'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#1B1815;
+      --surface:#242019;
+      --surface-2:#2C2620;
+      --ink:#EEE7DF;
+      --ink-soft:#A79C8F;
+      --line:#3A3229;
+      --accent:#8CB3A3;
+      --accent-strong:#A9CFC0;
+      --accent-contrast:#152019;
+      --accent-soft-bg:#22302A;
+      --accent-soft-fg:#A9CFC0;
+      --tag-estetica-fg:#E3AFBC;
+      --tag-estetica-bg:#3B2731;
+      --tag-psi-fg:#A0C7B8;
+      --tag-psi-bg:#22322D;
+      --danger:#E39289;
+      --danger-bg:#3B2621;
+      --danger-contrast:#241512;
+      --nav-blur-bg:rgba(27,24,21,.78);
+      --sheet-backdrop:rgba(0,0,0,.55);
+      --shadow-1:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#1B1815;
+    --surface:#242019;
+    --surface-2:#2C2620;
+    --ink:#EEE7DF;
+    --ink-soft:#A79C8F;
+    --line:#3A3229;
+    --accent:#8CB3A3;
+    --accent-strong:#A9CFC0;
+    --accent-contrast:#152019;
+    --accent-soft-bg:#22302A;
+    --accent-soft-fg:#A9CFC0;
+    --tag-estetica-fg:#E3AFBC;
+    --tag-estetica-bg:#3B2731;
+    --tag-psi-fg:#A0C7B8;
+    --tag-psi-bg:#22322D;
+    --danger:#E39289;
+    --danger-bg:#3B2621;
+    --danger-contrast:#241512;
+    --nav-blur-bg:rgba(27,24,21,.78);
+    --sheet-backdrop:rgba(0,0,0,.55);
+    --shadow-1:0 1px 2px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--surface-2);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+    overscroll-behavior:none;
+  }
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.01em;text-wrap:balance;margin:0;}
+  button,input,textarea,select{font-family:inherit;color:inherit;}
+  button{cursor:pointer;touch-action:manipulation;}
+  input,textarea,select{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-s);
+    padding:11px 12px;
+    color:var(--ink);
+    width:100%;
+    font-size:16px; /* >=16px prevents iOS Safari auto-zoom on focus */
+  }
+  input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  textarea{resize:vertical;min-height:70px;}
+  ::placeholder{color:var(--ink-soft);opacity:.75;}
+  .num{font-variant-numeric:tabular-nums;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+  }
+
+  /* ---------- app frame (phone-width, centered on larger screens) ---------- */
+  .app{
+    position:relative;
+    height:100%;
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:none;
+  }
+  @media (min-width:520px){
+    body{display:flex;justify-content:center;padding:0;}
+    .app{box-shadow:var(--shadow-1);}
+  }
+
+  .storage-banner{
+    background:var(--danger-bg);
+    color:var(--danger);
+    padding:9px 16px;
+    font-size:.78rem;
+    text-align:center;
+    flex:none;
+  }
+
+  /* ---------- nav stack (push / pop screens) ---------- */
+  .nav-stack{position:relative;flex:1;min-height:0;overflow:hidden;}
+  .nav-stack-inner{
+    display:flex;
+    width:200%;
+    height:100%;
+    transform:translateX(0%);
+    transition:transform .36s cubic-bezier(.32,.72,0,1);
+  }
+  .nav-stack-inner.at-detail{transform:translateX(-50%);}
+  .screen{width:50%;height:100%;display:flex;flex-direction:column;min-height:0;}
+
+  .navbar{
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:max(10px,env(safe-area-inset-top)) 8px 10px 8px;
+    min-height:46px;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    transition:background .2s,border-color .2s;
+    position:relative;
+    z-index:5;
+  }
+  .navbar.scrolled{
+    background:var(--nav-blur-bg);
+    -webkit-backdrop-filter:blur(20px);
+    backdrop-filter:blur(20px);
+    border-bottom-color:var(--line);
+  }
+  .navbar-title{
+    font-weight:600;
+    font-size:.98rem;
+    opacity:0;
+    transform:translateY(4px);
+    transition:opacity .2s,transform .2s;
+    text-align:center;
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding:0 4px;
+  }
+  .navbar.scrolled .navbar-title{opacity:1;transform:translateY(0);}
+  .navbar-icon-btn{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;border:none;font-size:1.05rem;flex:none;
+    color:var(--ink);
+  }
+  .navbar-icon-btn:active{background:var(--surface-2);}
+  .navbar-back{
+    background:none;border:none;color:var(--accent);font-size:.95rem;font-weight:500;
+    padding:6px 4px 6px 2px;display:flex;align-items:center;gap:2px;flex:none;max-width:40%;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .navbar-text-btn{
+    background:none;border:none;color:var(--accent);font-size:.95rem;font-weight:600;
+    padding:6px 6px;flex:none;
+  }
+  .navbar-spacer{width:34px;flex:none;}
+
+  .screen-scroll{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+    padding:0 16px calc(100px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- list screen ---------- */
+  .hero-title{padding:2px 2px 14px;}
+  .hero-title h1{font-size:2rem;}
+  .hero-sub{margin-top:4px;font-size:.84rem;color:var(--ink-soft);}
+  .hero-sub .breakdown{display:block;font-size:.78rem;margin-top:1px;}
+
+  .search-field{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface-2);
+    border-radius:var(--radius-s);
+    padding:9px 12px;
+    margin-bottom:12px;
+  }
+  .search-field .search-icon{opacity:.6;font-size:.9rem;}
+  .search-field input{background:transparent;border:none;padding:0;}
+  .search-field input:focus-visible{outline:none;}
+
+  .segmented{
+    position:relative;
+    display:flex;
+    background:var(--surface-2);
+    border-radius:var(--radius-s);
+    padding:3px;
+    margin-bottom:14px;
+    gap:2px;
+  }
+  .segmented-thumb{
+    position:absolute;
+    top:3px;left:3px;
+    width:calc(33.333% - 2px);
+    height:calc(100% - 6px);
+    background:var(--surface);
+    border-radius:8px;
+    box-shadow:0 1px 3px rgba(0,0,0,.12);
+    transition:transform .26s cubic-bezier(.32,.72,0,1);
+    z-index:0;
+  }
+  .segmented-btn{
+    position:relative;z-index:1;flex:1;
+    background:transparent;border:none;
+    padding:7px 4px;font-size:.78rem;font-weight:500;
+    color:var(--ink-soft);border-radius:8px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .segmented-btn.active{color:var(--ink);font-weight:600;}
+
+  .sort-inline{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:.82rem;color:var(--ink-soft);}
+  .sort-inline select{width:auto;padding:6px 8px;font-size:.82rem;border-radius:8px;}
+
+  .list-group{
+    background:var(--surface);
+    border-radius:var(--radius-m);
+    overflow:hidden;
+    box-shadow:var(--shadow-1);
+  }
+  .list-group + .list-group{margin-top:18px;}
+  .list-group-header{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-soft);font-weight:600;
+    padding:0 2px 8px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .list-group-header.row{padding:0 0 8px;}
+  section > .list-group-header{padding-left:2px;}
+
+  .list-row{
+    width:100%;
+    display:flex;align-items:center;gap:8px;
+    padding:13px 14px;
+    background:var(--surface);
+    border:none;border-bottom:1px solid var(--line);
+    text-align:left;
+  }
+  .list-row:last-child{border-bottom:none;}
+  .list-row:active{background:var(--surface-2);}
+  .list-row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .list-row-top{display:flex;align-items:center;gap:8px;}
+  .list-row-name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .list-row-sub{font-size:.8rem;color:var(--ink-soft);}
+  .chevron{color:var(--ink-soft);opacity:.6;font-size:1.1rem;flex:none;}
+
+  .tag{
+    display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;
+    font-size:.66rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;flex:none;
+  }
+  .tag-estetica{background:var(--tag-estetica-bg);color:var(--tag-estetica-fg);}
+  .tag-psi{background:var(--tag-psi-bg);color:var(--tag-psi-fg);}
+
+  .empty-list, .detail-empty{color:var(--ink-soft);text-align:center;padding:40px 16px;font-size:.88rem;}
+  .detail-empty .glyph{font-size:2.1rem;opacity:.55;margin-bottom:10px;}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed;
+    right:max(20px,calc(50vw - 240px + 20px));
+    bottom:max(24px, calc(env(safe-area-inset-bottom) + 18px));
+    width:56px;height:56px;border-radius:50%;
+    background:var(--accent);color:var(--accent-contrast);
+    border:none;box-shadow:0 4px 14px rgba(38,35,32,.28);
+    font-size:1.6rem;font-weight:400;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    z-index:60;
+    transition:transform .3s cubic-bezier(.32,.72,0,1),opacity .3s;
+  }
+  .fab:active{transform:scale(.93);}
+  .app.view-detail .fab{transform:translateY(90px) scale(.8);opacity:0;pointer-events:none;}
+
+  /* ---------- detail screen ---------- */
+  .detail-hero{padding:6px 2px 18px;}
+  .detail-hero-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .detail-hero-top h1{font-size:1.6rem;}
+  .detail-hero-meta{margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;font-size:.84rem;color:var(--ink-soft);}
+  .detail-hero-meta strong{color:var(--ink);font-weight:600;}
+
+  .notes-block{padding:14px;font-size:.92rem;white-space:pre-wrap;color:var(--ink);}
+  .notes-block.empty{color:var(--ink-soft);font-style:italic;}
+
+  .text-action{background:none;border:none;color:var(--accent);font-weight:600;font-size:.84rem;padding:4px;}
+
+  .visit-row{
+    width:100%;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+    padding:13px 14px;background:var(--surface);border:none;border-bottom:1px solid var(--line);text-align:left;
+  }
+  .visit-row:last-child{border-bottom:none;}
+  .visit-row:active{background:var(--surface-2);}
+  .visit-row-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+  .visit-row-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .visit-date{font-weight:600;font-family:var(--font-display);font-size:.92rem;}
+  .visit-proc{color:var(--ink);font-size:.88rem;}
+  .visit-value{font-weight:600;color:var(--accent-strong);font-size:.86rem;margin-left:auto;}
+  .visit-notes{font-size:.8rem;color:var(--ink-soft);white-space:pre-wrap;}
+  .visit-row .chevron{margin-top:2px;}
+
+  .danger-zone{margin-top:22px;}
+  .btn-destructive-block{
+    width:100%;background:var(--surface);color:var(--danger);border:none;border-radius:var(--radius-m);
+    padding:13px;font-weight:600;font-size:.92rem;box-shadow:var(--shadow-1);
+  }
+  .btn-destructive-block:active{background:var(--danger-bg);}
+
+  /* ---------- fields (used inside sheets) ---------- */
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:.8rem;color:var(--ink-soft);font-weight:500;}
+  .radio-row{display:flex;gap:10px;}
+  .radio-pill{
+    flex:1;border:1px solid var(--line);border-radius:var(--radius-s);padding:11px;
+    text-align:center;font-size:.86rem;font-weight:600;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .radio-pill input{width:auto;margin:0;}
+  .radio-pill.checked-estetica{background:var(--tag-estetica-bg);color:var(--tag-estetica-fg);border-color:var(--tag-estetica-bg);}
+  .radio-pill.checked-psi{background:var(--tag-psi-bg);color:var(--tag-psi-fg);border-color:var(--tag-psi-bg);}
+  .field-row{display:flex;gap:10px;}
+  .field-row .field{flex:1;}
+
+  /* ---------- bottom sheet ---------- */
+  .sheet-overlay{
+    position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;
+    z-index:300;
+  }
+  .sheet-backdrop{position:absolute;inset:0;background:var(--sheet-backdrop);opacity:0;transition:opacity .28s;}
+  .sheet-overlay.open .sheet-backdrop{opacity:1;}
+  .sheet-panel{
+    position:relative;width:100%;max-width:480px;max-height:88vh;
+    background:var(--surface);border-radius:20px 20px 0 0;
+    display:flex;flex-direction:column;
+    transform:translateY(100%);
+    transition:transform .32s cubic-bezier(.32,.72,0,1);
+    padding-bottom:max(14px,env(safe-area-inset-bottom));
+    box-shadow:0 -8px 30px rgba(0,0,0,.15);
+  }
+  .sheet-overlay.open .sheet-panel{transform:translateY(0);}
+  .sheet-handle{width:36px;height:5px;border-radius:3px;background:var(--line);margin:9px auto 0;flex:none;}
+  .sheet-header{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:12px 14px 13px;border-bottom:1px solid var(--line);flex:none;
+  }
+  .sheet-title{font-weight:600;font-size:.98rem;flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sheet-btn{background:none;border:none;color:var(--accent);font-size:.95rem;padding:6px 4px;flex:none;min-width:56px;}
+  .sheet-btn-primary{font-weight:700;text-align:right;}
+  .sheet-btn-cancel{text-align:left;}
+  .sheet-body{padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:14px;}
+
+  /* ---------- iOS-style alert ---------- */
+  .alert-overlay{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .alert-backdrop{position:absolute;inset:0;background:var(--sheet-backdrop);opacity:0;transition:opacity .2s;}
+  .alert-overlay.open .alert-backdrop{opacity:1;}
+  .alert-card{
+    position:relative;width:100%;max-width:270px;background:var(--surface);
+    border-radius:14px;overflow:hidden;text-align:center;
+    transform:scale(.9);opacity:0;transition:transform .18s,opacity .18s;
+    box-shadow:var(--shadow-1);
+  }
+  .alert-overlay.open .alert-card{transform:scale(1);opacity:1;}
+  .alert-title{font-weight:600;padding:18px 16px 4px;font-size:.95rem;}
+  .alert-message{padding:0 16px 16px;font-size:.84rem;color:var(--ink-soft);}
+  .alert-actions{display:flex;border-top:1px solid var(--line);}
+  .alert-btn{flex:1;padding:13px;font-size:.95rem;color:var(--accent);background:none;border:none;border-right:1px solid var(--line);}
+  .alert-btn:last-child{border-right:none;}
+  .alert-btn.destructive{color:var(--danger);font-weight:600;}
+
+  /* ---------- action sheet (backup menu) ---------- */
+  .actionsheet-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:flex-end;justify-content:center;}
+  .actionsheet-backdrop{position:absolute;inset:0;background:var(--sheet-backdrop);opacity:0;transition:opacity .24s;}
+  .actionsheet-overlay.open .actionsheet-backdrop{opacity:1;}
+  .actionsheet-wrap{
+    position:relative;width:100%;max-width:480px;padding:0 8px calc(8px + env(safe-area-inset-bottom));
+    transform:translateY(30px);opacity:0;transition:transform .24s,opacity .24s;
+  }
+  .actionsheet-overlay.open .actionsheet-wrap{transform:translateY(0);opacity:1;}
+  .actionsheet-note{
+    background:var(--surface);border-radius:14px 14px 0 0;padding:12px 16px;
+    font-size:.76rem;color:var(--ink-soft);text-align:center;border-bottom:1px solid var(--line);
+  }
+  .actionsheet-group{background:var(--surface);border-radius:0 0 14px 14px;overflow:hidden;margin-bottom:8px;}
+  .actionsheet-group:first-child{border-radius:14px;}
+  .actionsheet-btn{width:100%;padding:15px;font-size:1rem;border:none;border-top:1px solid var(--line);background:transparent;text-align:center;color:var(--accent);}
+  .actionsheet-note + .actionsheet-btn,
+  .actionsheet-group .actionsheet-btn:first-child{border-top:none;}
+  .actionsheet-cancel{width:100%;padding:15px;border-radius:14px;background:var(--surface);font-weight:600;text-align:center;border:none;color:var(--ink);}
+
+  /* ---------- toast ---------- */
+  .toast-area{
+    position:fixed;top:max(14px,env(safe-area-inset-top));left:0;right:0;
+    display:flex;flex-direction:column;align-items:center;gap:8px;z-index:500;pointer-events:none;
+  }
+  .toast{
+    background:rgba(38,34,30,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    color:#fff;padding:10px 18px;border-radius:999px;font-size:.82rem;font-weight:500;
+    box-shadow:var(--shadow-1);max-width:86%;text-align:center;animation:toast-in .22s ease-out;
+  }
+  .toast.error{background:rgba(179,66,58,.95);}
+  .toast.success{background:rgba(62,98,89,.95);}
+  @keyframes toast-in{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="storage-banner" id="storageBanner" hidden>
+    Não foi possível salvar as alterações neste navegador. Tente recarregar a página; se persistir, use "Exportar backup" para não perder o que já foi digitado.
+  </div>
+
+  <div class="nav-stack" id="navStack">
+    <div class="nav-stack-inner" id="navStackInner">
+
+      <section class="screen" id="screenList">
+        <div class="navbar" id="navbarList">
+          <span class="navbar-spacer"></span>
+          <span class="navbar-title">Fichário</span>
+          <button class="navbar-icon-btn" id="btnSettings" aria-label="Backup e dados">⚙️</button>
+        </div>
+        <div class="screen-scroll" id="listScroll">
+          <div class="hero-title">
+            <h1>Fichário</h1>
+            <p class="hero-sub" id="heroSub"></p>
+          </div>
+          <div class="search-field">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="searchInput" placeholder="Buscar por nome" enterkeyhint="search">
+          </div>
+          <div class="segmented" id="segmented">
+            <div class="segmented-thumb" id="segmentedThumb"></div>
+            <button type="button" class="segmented-btn active" data-cat="todos">Todos</button>
+            <button type="button" class="segmented-btn" data-cat="estetica">Estética</button>
+            <button type="button" class="segmented-btn" data-cat="psicanalise">Psicanálise</button>
+          </div>
+          <div class="sort-inline">
+            <label for="sortSelect">Ordenar por</label>
+            <select id="sortSelect">
+              <option value="nome">Nome (A–Z)</option>
+              <option value="recente">Visita mais recente</option>
+              <option value="cadastro">Cadastro mais recente</option>
+            </select>
+          </div>
+          <div class="list-group" id="clientListGroup">
+            <div id="clientList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screenDetail">
+        <div class="navbar navbar-detail scrolled" id="navbarDetail">
+          <button class="navbar-back" id="btnBack">‹ Fichário</button>
+          <span class="navbar-title" id="navbarDetailTitle"></span>
+          <button class="navbar-text-btn" id="btnEditClient">Editar</button>
+        </div>
+        <div class="screen-scroll" id="detailScroll">
+          <div id="detailContent"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <button class="fab" id="btnNewClient" aria-label="Novo cliente" type="button">+</button>
+</div>
+
+<div class="toast-area" id="toastArea"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = 'fichario-clientes-v1';
+  var storageAvailable = true;
+  var clients = [];
+  var selectedId = null;
+  var filterCategoria = 'todos';
+  var searchTerm = '';
+  var sortBy = 'nome';
+
+  var CATEGORIAS = {
+    estetica: { label: 'Estética', tagClass: 'tag-estetica' },
+    psicanalise: { label: 'Psicanálise', tagClass: 'tag-psi' }
+  };
+  var CAT_ORDER = ['todos','estetica','psicanalise'];
+
+  /* ---------- utils ---------- */
+  function uid(){
+    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  }
+  function todayISO(){
+    var d = new Date();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+  function parseISODateLocal(iso){
+    if(!iso) return null;
+    var parts = iso.split('-');
+    if(parts.length !== 3) return null;
+    return new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+  }
+  function formatDateBR(iso){
+    var d = parseISODateLocal(iso);
+    if(!d) return '—';
+    return d.toLocaleDateString('pt-BR');
+  }
+  function formatCurrencyBRL(v){
+    var n = Number(v);
+    if(isNaN(n)) n = 0;
+    return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  }
+  function calcIdade(iso){
+    var d = parseISODateLocal(iso);
+    if(!d) return null;
+    var hoje = new Date();
+    var idade = hoje.getFullYear() - d.getFullYear();
+    var mDiff = hoje.getMonth() - d.getMonth();
+    if(mDiff < 0 || (mDiff === 0 && hoje.getDate() < d.getDate())) idade--;
+    return idade;
+  }
+  function escapeHtml(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function ultimaVisita(cliente){
+    if(!cliente.visitas || !cliente.visitas.length) return null;
+    var maisRecente = cliente.visitas[0];
+    cliente.visitas.forEach(function(v){ if(v.data > maisRecente.data) maisRecente = v; });
+    return maisRecente;
+  }
+  function q(sel, root){ return (root||document).querySelector(sel); }
+  function qa(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+
+  /* ---------- storage ----------
+     Grava em dois mecanismos em paralelo (localStorage + IndexedDB) porque
+     o Safari, em algumas situações (abertura via pré-visualização do app
+     Arquivos, modo privado, restrições de armazenamento em file://), pode
+     bloquear um dos dois. Se um falhar, o outro mantém os dados salvos, e ao
+     recarregar a página o que tiver dados é usado para restaurar o outro. */
+  function idbOpen(){
+    return new Promise(function(resolve){
+      if(!window.indexedDB){ resolve(null); return; }
+      try{
+        var req = indexedDB.open('fichario-db', 1);
+        req.onupgradeneeded = function(){
+          try{ req.result.createObjectStore('kv'); }catch(e){}
+        };
+        req.onsuccess = function(){ resolve(req.result); };
+        req.onerror = function(){ resolve(null); };
+        req.onblocked = function(){ resolve(null); };
+      }catch(e){ resolve(null); }
+    });
+  }
+  function idbGet(key){
+    return idbOpen().then(function(db){
+      if(!db) return null;
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction('kv','readonly');
+          var req = tx.objectStore('kv').get(key);
+          req.onsuccess = function(){ resolve(req.result != null ? req.result : null); };
+          req.onerror = function(){ resolve(null); };
+        }catch(e){ resolve(null); }
+      });
+    }).catch(function(){ return null; });
+  }
+  function idbSet(key, value){
+    return idbOpen().then(function(db){
+      if(!db) return false;
+      return new Promise(function(resolve){
+        try{
+          var tx = db.transaction('kv','readwrite');
+          tx.objectStore('kv').put(value, key);
+          tx.oncomplete = function(){ resolve(true); };
+          tx.onerror = function(){ resolve(false); };
+        }catch(e){ resolve(false); }
+      });
+    }).catch(function(){ return false; });
+  }
+
+  function loadData(){
+    var lsData = null, lsOk = true;
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      lsData = raw ? JSON.parse(raw) : null;
+    }catch(e){ lsOk = false; }
+
+    if(Array.isArray(lsData) && lsData.length){
+      clients = lsData;
+      idbSet(STORAGE_KEY, clients); // mantém o espelho em dia, em segundo plano
+      storageAvailable = true;
+      return Promise.resolve();
+    }
+
+    return idbGet(STORAGE_KEY).then(function(idbData){
+      if(Array.isArray(idbData) && idbData.length){
+        clients = idbData;
+        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); }catch(e){}
+        storageAvailable = true;
+      } else {
+        clients = Array.isArray(lsData) ? lsData : [];
+        storageAvailable = lsOk;
+      }
+    });
+  }
+
+  function saveData(){
+    var lsOk = true;
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+    }catch(e){ lsOk = false; }
+
+    idbSet(STORAGE_KEY, clients).then(function(idbOk){
+      var anyOk = lsOk || idbOk;
+      storageAvailable = anyOk;
+      document.getElementById('storageBanner').hidden = anyOk;
+      if(!anyOk){
+        showToast('Não foi possível salvar as alterações neste navegador.', 'error');
+      }
+    });
+  }
+
+  /* ---------- toast ---------- */
+  function showToast(msg, type){
+    var area = document.getElementById('toastArea');
+    var el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    area.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 2600);
+  }
+
+  /* ---------- iOS-style alert ---------- */
+  function confirmDialog(title, message, confirmLabel, danger){
+    return new Promise(function(resolve){
+      var overlay = document.createElement('div');
+      overlay.className = 'alert-overlay';
+      overlay.innerHTML =
+        '<div class="alert-backdrop"></div>' +
+        '<div class="alert-card" role="alertdialog" aria-modal="true">' +
+          '<div class="alert-title">' + escapeHtml(title) + '</div>' +
+          '<div class="alert-message">' + escapeHtml(message) + '</div>' +
+          '<div class="alert-actions">' +
+            '<button class="alert-btn" data-act="cancel" type="button">Cancelar</button>' +
+            '<button class="alert-btn' + (danger ? ' destructive' : '') + '" data-act="ok" type="button">' + escapeHtml(confirmLabel || 'Confirmar') + '</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function(){ overlay.classList.add('open'); });
+      function close(result){
+        overlay.classList.remove('open');
+        setTimeout(function(){ overlay.remove(); }, 180);
+        resolve(result);
+      }
+      overlay.querySelector('.alert-backdrop').addEventListener('click', function(){ close(false); });
+      overlay.querySelector('[data-act="cancel"]').addEventListener('click', function(){ close(false); });
+      overlay.querySelector('[data-act="ok"]').addEventListener('click', function(){ close(true); });
+    });
+  }
+
+  /* ---------- bottom sheet ---------- */
+  function openSheet(opts){
+    var overlay = document.createElement('div');
+    overlay.className = 'sheet-overlay';
+    overlay.innerHTML =
+      '<div class="sheet-backdrop"></div>' +
+      '<div class="sheet-panel" role="dialog" aria-modal="true">' +
+        '<div class="sheet-handle"></div>' +
+        '<div class="sheet-header">' +
+          '<button type="button" class="sheet-btn sheet-btn-cancel" data-act="cancel">Cancelar</button>' +
+          '<div class="sheet-title">' + escapeHtml(opts.title) + '</div>' +
+          '<button type="button" class="sheet-btn sheet-btn-primary" data-act="confirm">' + escapeHtml(opts.confirmLabel || 'Salvar') + '</button>' +
+        '</div>' +
+        '<div class="sheet-body">' + opts.bodyHtml + '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function(){ overlay.classList.add('open'); });
+
+    function close(){
+      overlay.classList.remove('open');
+      setTimeout(function(){ overlay.remove(); }, 260);
+    }
+    overlay.querySelector('.sheet-backdrop').addEventListener('click', close);
+    overlay.querySelector('[data-act="cancel"]').addEventListener('click', close);
+    overlay.querySelector('[data-act="confirm"]').addEventListener('click', function(){
+      var result = opts.onConfirm ? opts.onConfirm(overlay) : true;
+      if(result !== false) close();
+    });
+    if(opts.onMount) opts.onMount(overlay, close);
+    return { close: close, el: overlay };
+  }
+
+  /* ---------- action sheet (backup menu) ---------- */
+  function openBackupActionSheet(){
+    var overlay = document.createElement('div');
+    overlay.className = 'actionsheet-overlay';
+    overlay.innerHTML =
+      '<div class="actionsheet-backdrop"></div>' +
+      '<div class="actionsheet-wrap">' +
+        '<div class="actionsheet-group">' +
+          '<div class="actionsheet-note">Dados salvos só neste dispositivo — use o backup para guardar uma cópia ou levar os dados para outro aparelho.</div>' +
+          '<button type="button" class="actionsheet-btn" data-act="export">Exportar backup</button>' +
+          '<button type="button" class="actionsheet-btn" data-act="import">Importar backup</button>' +
+        '</div>' +
+        '<button type="button" class="actionsheet-cancel" data-act="cancel">Cancelar</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function(){ overlay.classList.add('open'); });
+    function close(){
+      overlay.classList.remove('open');
+      setTimeout(function(){ overlay.remove(); }, 220);
+    }
+    overlay.querySelector('.actionsheet-backdrop').addEventListener('click', close);
+    overlay.querySelector('[data-act="cancel"]').addEventListener('click', close);
+    overlay.querySelector('[data-act="export"]').addEventListener('click', function(){ close(); exportBackup(); });
+    overlay.querySelector('[data-act="import"]').addEventListener('click', function(){ close(); document.getElementById('fileImport').click(); });
+  }
+
+  /* ---------- navigation (list <-> detail) ---------- */
+  function pushDetail(clienteId){
+    selectedId = clienteId;
+    document.getElementById('navStackInner').classList.add('at-detail');
+    document.getElementById('app').classList.add('view-detail');
+    document.getElementById('detailScroll').scrollTop = 0;
+    renderDetail();
+  }
+  function popToList(){
+    document.getElementById('navStackInner').classList.remove('at-detail');
+    document.getElementById('app').classList.remove('view-detail');
+  }
+
+  /* ---------- rendering: list ---------- */
+  function updateHeroSub(){
+    var estetica = clients.filter(function(c){return c.categoria==='estetica';}).length;
+    var psi = clients.filter(function(c){return c.categoria==='psicanalise';}).length;
+    var sub = document.getElementById('heroSub');
+    var label = clients.length === 1 ? '1 cliente cadastrado' : clients.length + ' clientes cadastrados';
+    sub.innerHTML = label + (clients.length ? '<span class="breakdown">' + estetica + ' estética · ' + psi + ' psicanálise</span>' : '');
+  }
+
+  function setActiveFilter(cat){
+    filterCategoria = cat;
+    var idx = CAT_ORDER.indexOf(cat);
+    document.getElementById('segmentedThumb').style.transform = 'translateX(' + (idx*100) + '%)';
+    qa('.segmented-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cat')===cat); });
+    renderList();
+  }
+
+  function getFilteredSortedClients(){
+    var term = searchTerm.trim().toLowerCase();
+    var list = clients.filter(function(c){
+      if(filterCategoria !== 'todos' && c.categoria !== filterCategoria) return false;
+      if(term && c.nome.toLowerCase().indexOf(term) === -1) return false;
+      return true;
+    });
+    list.sort(function(a,b){
+      if(sortBy === 'nome') return a.nome.localeCompare(b.nome, 'pt-BR');
+      if(sortBy === 'cadastro') return (b.criadoEm||'').localeCompare(a.criadoEm||'');
+      if(sortBy === 'recente'){
+        var uvA = ultimaVisita(a), uvB = ultimaVisita(b);
+        return (uvB?uvB.data:'').localeCompare(uvA?uvA.data:'');
+      }
+      return 0;
+    });
+    return list;
+  }
+
+  function renderList(){
+    updateHeroSub();
+    var listEl = document.getElementById('clientList');
+    var list = getFilteredSortedClients();
+    if(!list.length){
+      listEl.innerHTML = '<div class="empty-list">' + (clients.length ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado ainda.<br>Toque em “+” para começar.') + '</div>';
+      return;
+    }
+    listEl.innerHTML = list.map(function(c){
+      var cat = CATEGORIAS[c.categoria] || CATEGORIAS.estetica;
+      var uv = ultimaVisita(c);
+      var uvLabel = uv ? formatDateBR(uv.data) : 'Sem visitas registradas';
+      return '<button type="button" class="list-row" data-id="' + c.id + '">' +
+        '<span class="list-row-main">' +
+          '<span class="list-row-top"><span class="list-row-name">' + escapeHtml(c.nome) + '</span>' +
+          '<span class="tag ' + cat.tagClass + '">' + cat.label + '</span></span>' +
+          '<span class="list-row-sub">Última visita: <span class="num">' + uvLabel + '</span></span>' +
+        '</span>' +
+        '<span class="chevron">›</span>' +
+      '</button>';
+    }).join('');
+    qa('.list-row', listEl).forEach(function(row){
+      row.addEventListener('click', function(){ pushDetail(row.getAttribute('data-id')); });
+    });
+  }
+
+  /* ---------- rendering: detail ---------- */
+  function renderDetail(){
+    var cliente = clients.find(function(c){ return c.id === selectedId; });
+    var content = document.getElementById('detailContent');
+    var titleEl = document.getElementById('navbarDetailTitle');
+    var editBtn = document.getElementById('btnEditClient');
+
+    if(!cliente){
+      titleEl.textContent = '';
+      editBtn.hidden = true;
+      content.innerHTML = '<div class="detail-empty"><div class="glyph">🗂️</div>Cliente não encontrado.</div>';
+      return;
+    }
+    editBtn.hidden = false;
+    titleEl.textContent = cliente.nome;
+
+    var cat = CATEGORIAS[cliente.categoria] || CATEGORIAS.estetica;
+    var idade = calcIdade(cliente.dataNascimento);
+    var visitasOrdenadas = (cliente.visitas || []).slice().sort(function(a,b){ return b.data.localeCompare(a.data); });
+    var totalGasto = (cliente.visitas || []).reduce(function(sum,v){ return sum + (Number(v.valor)||0); }, 0);
+
+    var visitasHtml = visitasOrdenadas.length
+      ? visitasOrdenadas.map(function(v){
+          return '<button type="button" class="visit-row" data-visita-id="' + v.id + '">' +
+            '<span class="visit-row-main">' +
+              '<span class="visit-row-top"><span class="visit-date num">' + formatDateBR(v.data) + '</span>' +
+              '<span class="visit-proc">' + escapeHtml(v.procedimento) + '</span></span>' +
+              (v.anotacoes ? '<span class="visit-notes">' + escapeHtml(v.anotacoes) + '</span>' : '') +
+            '</span>' +
+            '<span class="visit-value num">' + formatCurrencyBRL(v.valor) + '</span>' +
+            '<span class="chevron">›</span>' +
+          '</button>';
+        }).join('')
+      : '<div class="notes-block empty">Nenhuma visita registrada ainda. Toque em “+ Registrar” para adicionar a primeira.</div>';
+
+    content.innerHTML =
+      '<div class="detail-hero">' +
+        '<div class="detail-hero-top"><h1>' + escapeHtml(cliente.nome) + '</h1><span class="tag ' + cat.tagClass + '">' + cat.label + '</span></div>' +
+        '<div class="detail-hero-meta">' +
+          '<span>Nascimento <strong class="num">' + (cliente.dataNascimento ? formatDateBR(cliente.dataNascimento) + (idade!==null ? ' · ' + idade + ' anos' : '') : '—') + '</strong></span>' +
+          '<span>Total em visitas <strong class="num">' + formatCurrencyBRL(totalGasto) + '</strong></span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="list-group-header">Anotações gerais</div>' +
+      '<div class="list-group"><div class="notes-block' + (cliente.anotacoes ? '' : ' empty') + '">' + (cliente.anotacoes ? escapeHtml(cliente.anotacoes) : 'Sem anotações gerais.') + '</div></div>' +
+      '<div class="list-group-header row"><span>Histórico de visitas</span><button type="button" class="text-action" id="btnAddVisita">+ Registrar</button></div>' +
+      '<div class="list-group">' + visitasHtml + '</div>' +
+      '<div class="danger-zone"><button type="button" class="btn-destructive-block" id="btnDeleteClient">Excluir cliente</button></div>';
+
+    document.getElementById('btnAddVisita').addEventListener('click', function(){ openVisitSheet(cliente.id, null); });
+    document.getElementById('btnDeleteClient').addEventListener('click', function(){ deleteClient(cliente.id); });
+    qa('[data-visita-id]', content).forEach(function(row){
+      row.addEventListener('click', function(){ openVisitSheet(cliente.id, row.getAttribute('data-visita-id')); });
+    });
+  }
+
+  /* ---------- visit sheet ---------- */
+  function openVisitSheet(clienteId, visitaId){
+    var cliente = clients.find(function(c){ return c.id === clienteId; });
+    if(!cliente) return;
+    if(!cliente.visitas) cliente.visitas = [];
+    var visita = visitaId ? cliente.visitas.find(function(v){ return v.id === visitaId; }) : null;
+    var isEdit = !!visita;
+
+    var bodyHtml =
+      '<div class="field-row">' +
+        '<div class="field"><label for="vfData">Data da visita</label><input type="date" id="vfData"></div>' +
+        '<div class="field"><label for="vfValor">Valor (R$)</label><input type="number" id="vfValor" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></div>' +
+      '</div>' +
+      '<div class="field"><label for="vfProc">Procedimento</label><input type="text" id="vfProc" placeholder="Ex.: Limpeza de pele, Sessão de terapia…"></div>' +
+      '<div class="field"><label for="vfNotas">Anotações da visita</label><textarea id="vfNotas" placeholder="Observações sobre esta visita…"></textarea></div>' +
+      (isEdit ? '<button type="button" class="btn-destructive-block" id="vfDelete">Excluir visita</button>' : '');
+
+    openSheet({
+      title: isEdit ? 'Editar visita' : 'Nova visita',
+      confirmLabel: isEdit ? 'Salvar' : 'Adicionar',
+      bodyHtml: bodyHtml,
+      onMount: function(overlay, close){
+        q('#vfData', overlay).value = visita ? visita.data : todayISO();
+        q('#vfProc', overlay).value = visita ? visita.procedimento : '';
+        q('#vfNotas', overlay).value = visita ? (visita.anotacoes||'') : '';
+        q('#vfValor', overlay).value = visita ? (visita.valor||'') : '';
+        var delBtn = q('#vfDelete', overlay);
+        if(delBtn){
+          delBtn.addEventListener('click', function(){
+            close();
+            deleteVisita(clienteId, visitaId);
+          });
+        }
+      },
+      onConfirm: function(overlay){
+        var data = q('#vfData', overlay).value;
+        var proc = q('#vfProc', overlay).value.trim();
+        var notas = q('#vfNotas', overlay).value.trim();
+        var valor = parseFloat(q('#vfValor', overlay).value);
+        if(isNaN(valor)) valor = 0;
+        if(!data || !proc){ showToast('Preencha a data e o procedimento.', 'error'); return false; }
+        if(isEdit){
+          visita.data = data; visita.procedimento = proc; visita.anotacoes = notas; visita.valor = valor;
+        } else {
+          cliente.visitas.push({ id: uid(), data: data, procedimento: proc, anotacoes: notas, valor: valor });
+        }
+        saveData();
+        renderDetail();
+        renderList();
+        showToast(isEdit ? 'Visita atualizada.' : 'Visita registrada.', 'success');
+        return true;
+      }
+    });
+  }
+
+  function deleteVisita(clienteId, visitaId){
+    confirmDialog('Excluir visita', 'Tem certeza que deseja excluir este registro de visita? Essa ação não pode ser desfeita.', 'Excluir', true).then(function(ok){
+      if(!ok) return;
+      var cliente = clients.find(function(c){return c.id===clienteId;});
+      if(!cliente) return;
+      cliente.visitas = (cliente.visitas||[]).filter(function(v){return v.id!==visitaId;});
+      saveData();
+      renderDetail();
+      renderList();
+      showToast('Visita excluída.', 'success');
+    });
+  }
+
+  function deleteClient(clienteId){
+    var cliente = clients.find(function(c){return c.id===clienteId;});
+    if(!cliente) return;
+    confirmDialog('Excluir cliente', 'Tem certeza que deseja excluir "' + cliente.nome + '" e todo o seu histórico de visitas? Essa ação não pode ser desfeita.', 'Excluir', true).then(function(ok){
+      if(!ok) return;
+      clients = clients.filter(function(c){return c.id!==clienteId;});
+      saveData();
+      popToList();
+      selectedId = null;
+      renderList();
+      showToast('Cliente excluído.', 'success');
+    });
+  }
+
+  /* ---------- client sheet (create/edit) ---------- */
+  function openClientSheet(clienteId){
+    var cliente = clienteId ? clients.find(function(c){return c.id===clienteId;}) : null;
+    var isEdit = !!cliente;
+
+    var bodyHtml =
+      '<div class="field"><label for="cmNome">Nome</label><input type="text" id="cmNome" placeholder="Nome completo"></div>' +
+      '<div class="field"><label>Categoria</label>' +
+        '<div class="radio-row">' +
+          '<label class="radio-pill" id="pillEstetica"><input type="radio" name="cmCategoria" value="estetica"> Estética</label>' +
+          '<label class="radio-pill" id="pillPsi"><input type="radio" name="cmCategoria" value="psicanalise"> Psicanálise</label>' +
+        '</div>' +
+      '</div>' +
+      '<div class="field"><label for="cmNasc">Data de nascimento</label><input type="date" id="cmNasc"></div>' +
+      '<div class="field"><label for="cmNotas">Anotações gerais</label><textarea id="cmNotas" placeholder="Observações gerais sobre o cliente…"></textarea></div>';
+
+    openSheet({
+      title: isEdit ? 'Editar cliente' : 'Novo cliente',
+      confirmLabel: isEdit ? 'Salvar' : 'Cadastrar',
+      bodyHtml: bodyHtml,
+      onMount: function(overlay){
+        q('#cmNome', overlay).value = cliente ? cliente.nome : '';
+        q('#cmNasc', overlay).value = cliente ? (cliente.dataNascimento||'') : '';
+        q('#cmNotas', overlay).value = cliente ? (cliente.anotacoes||'') : '';
+        var catInicial = cliente ? cliente.categoria : 'estetica';
+        overlay.querySelector('input[name="cmCategoria"][value="' + catInicial + '"]').checked = true;
+        updateRadioPillStyles(overlay);
+        qa('input[name="cmCategoria"]', overlay).forEach(function(r){
+          r.addEventListener('change', function(){ updateRadioPillStyles(overlay); });
+        });
+      },
+      onConfirm: function(overlay){
+        var nome = q('#cmNome', overlay).value.trim();
+        if(!nome){ showToast('Informe o nome do cliente.', 'error'); return false; }
+        var nasc = q('#cmNasc', overlay).value;
+        var notas = q('#cmNotas', overlay).value.trim();
+        var catEl = overlay.querySelector('input[name="cmCategoria"]:checked');
+        var categoria = catEl ? catEl.value : 'estetica';
+
+        if(isEdit){
+          cliente.nome = nome; cliente.dataNascimento = nasc; cliente.anotacoes = notas; cliente.categoria = categoria;
+        } else {
+          cliente = { id: uid(), nome: nome, dataNascimento: nasc, anotacoes: notas, categoria: categoria, visitas: [], criadoEm: new Date().toISOString() };
+          clients.push(cliente);
+        }
+        saveData();
+        renderList();
+        if(isEdit){
+          renderDetail();
+        } else {
+          pushDetail(cliente.id);
+        }
+        showToast(isEdit ? 'Cliente atualizado.' : 'Cliente cadastrado.', 'success');
+        return true;
+      }
+    });
+  }
+
+  function updateRadioPillStyles(overlay){
+    var pE = overlay.querySelector('#pillEstetica');
+    var pP = overlay.querySelector('#pillPsi');
+    var checked = overlay.querySelector('input[name="cmCategoria"]:checked');
+    pE.classList.toggle('checked-estetica', !!checked && checked.value === 'estetica');
+    pP.classList.toggle('checked-psi', !!checked && checked.value === 'psicanalise');
+  }
+
+  /* ---------- backup: export / import (download local, sem rede) ---------- */
+  function exportBackup(){
+    try{
+      var payload = JSON.stringify({ app: 'fichario-clientes', versao: 1, exportadoEm: new Date().toISOString(), clientes: clients }, null, 2);
+      var filename = 'fichario-backup-' + todayISO() + '.json';
+      var blob = new Blob([payload], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      showToast('Backup salvo nos downloads.', 'success');
+    }catch(e){
+      showToast('Não foi possível salvar o backup agora.', 'error');
+    }
+  }
+
+  function importBackupFile(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try{ parsed = JSON.parse(reader.result); }
+      catch(e){ showToast('Arquivo inválido: não é um JSON de backup válido.', 'error'); return; }
+      var novaLista = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.clientes) ? parsed.clientes : null);
+      if(!novaLista){ showToast('Arquivo inválido: formato de backup não reconhecido.', 'error'); return; }
+      confirmDialog('Importar backup', 'Isso substituirá todos os ' + clients.length + ' clientes salvos neste dispositivo pelos ' + novaLista.length + ' clientes do arquivo. Deseja continuar?', 'Substituir', true).then(function(ok){
+        if(!ok) return;
+        clients = novaLista;
+        selectedId = null;
+        popToList();
+        saveData();
+        renderList();
+        showToast('Backup importado.', 'success');
+      });
+    };
+    reader.onerror = function(){ showToast('Não foi possível ler o arquivo.', 'error'); };
+    reader.readAsText(file);
+  }
+
+  /* ---------- boot ---------- */
+  function init(){
+    document.getElementById('searchInput').addEventListener('input', function(e){
+      searchTerm = e.target.value;
+      renderList();
+    });
+    document.getElementById('sortSelect').addEventListener('change', function(e){
+      sortBy = e.target.value;
+      renderList();
+    });
+    qa('.segmented-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ setActiveFilter(btn.getAttribute('data-cat')); });
+    });
+    document.getElementById('btnNewClient').addEventListener('click', function(){ openClientSheet(null); });
+    document.getElementById('btnSettings').addEventListener('click', openBackupActionSheet);
+    document.getElementById('btnBack').addEventListener('click', popToList);
+    document.getElementById('btnEditClient').addEventListener('click', function(){ if(selectedId) openClientSheet(selectedId); });
+
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file'; fileInput.id = 'fileImport'; fileInput.accept = 'application/json,.json'; fileInput.hidden = true;
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener('change', function(e){
+      var file = e.target.files && e.target.files[0];
+      if(file) importBackupFile(file);
+      e.target.value = '';
+    });
+
+    var listScroll = document.getElementById('listScroll');
+    var navbarList = document.getElementById('navbarList');
+    listScroll.addEventListener('scroll', function(){
+      navbarList.classList.toggle('scrolled', listScroll.scrollTop > 16);
+    }, { passive:true });
+
+    loadData().then(function(){
+      if(!storageAvailable) document.getElementById('storageBanner').hidden = false;
+      renderList();
+      renderDetail();
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
